@@ -88,7 +88,7 @@ $(function() {
   /* This suite runs tests involving the asynchronous loading and
    * display of initial entries for the feed list.
    */
-  describe('Initial entries', function() {
+  describe('Initial entries loading', function() {
     /* First, set up some variables which will be used to hold the
      * title of the feed container at different states.
      */
@@ -122,7 +122,7 @@ $(function() {
      * function is called and completes its work, there is at least
      * a single .entry element within the .feed container.
      */
-    it('add at least one entry to the feed list', function(done) {
+    it('adds at least one entry to the feed list', function(done) {
       var feedEntries = $('div.feed > a.entry-link');
       expect(feedEntries.length).toBeGreaterThan(0);
       done();
