@@ -2,21 +2,28 @@
  *
  * This is the spec file that Jasmine will read and contains
  * all of the tests that will be run against your application.
- */
-
-/* We're placing all of our tests within the $() function,
+ *
+ * We're placing all of our tests within the $() function,
  * since some of these tests may require DOM elements. We want
  * to ensure they don't run until the DOM is ready.
  */
+ 
 $(function() {
-  /* This is our first test suite - a test suite just contains
-   * a related set of tests. This suite is all about the RSS
-   * feeds definitions, the allFeeds variable in our application.
+
+  /* RSS FEEDS TEST SUITE
+   * - - - - - - - - -
+   * This suite concerns the data in the allFeeds var in the app.
+   *
+   * Tests:
+   * - Are the RSS feeds defined?
+   * - Does each feed have a valid name?
+   * - Does each feed have a valid URL?
    */
+
   describe('RSS Feeds', function() {
-    /* This is our first test - it tests to make sure that the
-     * allFeeds variable has been defined and that it is not
-     * empty.
+
+    /* This test ensures that the allFeeds variable has
+     * been defined and that it is not empty.
      */
     it('are defined', function() {
       expect(allFeeds).toBeDefined();
@@ -45,13 +52,75 @@ $(function() {
         expect(allFeeds[i].url).not.toBe('');
       }
     });
+
+  });
+
+  /* LOADING INITIAL DATA TEST SUITE
+   * - - - - - - - - -
+   * This suite concerns the asynchronous loading and
+   * display of initial entries for the feed list.
+   *
+   * Tests:
+   * - Is the title updated as the initial feed is loaded?
+   * - Does the feed list get populated with loaded data?
+   */
+
+  describe('Initial entries loading', function() {
+
+    /* First, set up some variables which will be used to hold the
+     * title of the feed container at different states.
+     */
+    var currentFeedTitle,
+      newFeedTitle;
+
+
+    /* Since loading feeds is asynchronous, the first feed is requestd
+     * via 'loadFeed' before tests are run.
+     */
+    beforeAll(function(done) {
+      currentFeedTitle = $('h1.header-title').text();
+      loadFeed(0, function() {
+        done();
+      });
+    });
+
+
+    /* This test ensures when a new feed is loaded by the
+     * loadFeed function that the displayed feed title updates.
+     * The test compares the feed title text after loading
+     * one feed, to the feed title text after loading another.
+     */
+    it('updates the displayed feed title', function(done) {
+      newFeedTitle = $('h1.header-title').text();
+      expect(newFeedTitle).not.toEqual(currentFeedTitle);
+      done();
+    });
+
+
+    /* This test  ensures that when the loadFeed
+     * function is called and completes its work, there is at least
+     * a single .entry element within the .feed container.
+     */
+    it('adds at least one entry to the feed list', function(done) {
+      var feedEntries = $('div.feed > a.entry-link');
+      expect(feedEntries.length).toBeGreaterThan(0);
+      done();
+    });
+
   });
 
 
-  /* This suite contains tests for the menu in the UI. It is
-   * concerned with the visibility and toggle functionality.
+  /* MENU TEST SUITE
+   * - - - - - - - - -
+   * This suite concerns the the menu in the UI and its
+   * visibility and toggle functionality.
+   *
+   * Tests:
+   * - Is the menu hidden by default?
+   * - Is the menu's visibility toggled when its icon is selected?
    */
   describe('The menu', function() {
+
     /* First, set up some references to the body element and the
      * menu icon element, since both are involved in toggling
      * menu visibility.
@@ -76,73 +145,38 @@ $(function() {
      * user interaction, checks if the menu is open, then
      * repeats the process to close the menu.
      */
-    it('toggles visibility when the menu icon is clicked', function() {
+    it('toggles visibility when the menu icon is selected', function() {
       menuIcon.click();
       expect(body.hasClass('menu-hidden')).toBe(false);
       menuIcon.click();
       expect(body.hasClass('menu-hidden')).toBe(true);
     });
+
   });
 
 
-  /* This suite runs tests involving the asynchronous loading and
-   * display of initial entries for the feed list.
-   */
-  describe('Initial entries loading', function() {
-    /* First, set up some variables which will be used to hold the
-     * title of the feed container at different states.
-     */
-    var currentFeedTitle,
-        newFeedTitle;
-
-
-    /* Since loading feeds is asynchronous, the first feed is requestd
-     * via 'loadFeed' before tests are run.
-     */
-    beforeAll(function(done) {
-      currentFeedTitle = $('h1.header-title').text();
-      loadFeed(0, function() {
-        done();
-      });
-    });
-
-    /* This test ensures when a new feed is loaded by the
-     * loadFeed function that the displayed feed title updates.
-     * The test compares the feed title text after loading
-     * one feed, to the feed title text after loading another.
-     */
-    it('updates the displayed feed title', function(done) {
-      newFeedTitle = $('h1.header-title').text();
-      expect(newFeedTitle).not.toEqual(currentFeedTitle);
-      done();
-    });
-
-
-    /* This test  ensures that when the loadFeed
-     * function is called and completes its work, there is at least
-     * a single .entry element within the .feed container.
-     */
-    it('adds at least one entry to the feed list', function(done) {
-      var feedEntries = $('div.feed > a.entry-link');
-      expect(feedEntries.length).toBeGreaterThan(0);
-      done();
-    });
-  });
-
-
-  /* This suite runs tests involving the asynchronous loading and
-   * display of entries from new feeds after the initial feed
-   * entries have been loaded.
+  /* LOADING INITIAL DATA TEST SUITE
+   * - - - - - - - - -
+   * This suite concerns the asynchronous loading and
+   * display of entries from new feeds based on user input, and
+   * the effects on the UI.
+   *
+   * Tests:
+   * - Does the menu close automatically when the user selects a feed?
+   * - Does the displayed feed title update when the users selected a feed?
+   * - Does the feed list update when the user selects a feed?
+   * - Does the app fail gracefully when it tries to load bad data?
    */
   describe('New feed selection', function() {
+
     /* First, set up some variables which will be used to hold the
      * contents and title of the feed container at different states.
      */
     var body = $('body'),
-        currentFeedHTML,
-        newFeedHTML,
-        currentFeedTitle,
-        newFeedTitle;
+      currentFeedHTML,
+      newFeedHTML,
+      currentFeedTitle,
+      newFeedTitle;
 
 
     // Increase the timeout to 10s for terrible slow connections
@@ -174,6 +208,7 @@ $(function() {
       expect(body.hasClass('menu-hidden')).toBe(true);
     });
 
+
     /* This test ensures when a new feed is loaded by the
      * loadFeed function that the displayed feed title updates.
      * The test compares the feed title text after loading
@@ -196,5 +231,27 @@ $(function() {
       expect(newFeedHTML).not.toEqual(currentFeedHTML);
       done();
     });
+
+
+    /* This test ensures that when bad data is loaded, the UI
+     * isn't negatively affected, and the feed list just shows
+     * the last good feed that was loaded. A broken feed is
+     * temporarily added to the feedlist for this test.
+     */
+    it('fails gracefully when a feed can`t load', function(done) {
+      allFeeds.push({
+        name: 'Broken feed',
+        url: 'http://localhost'
+      });
+
+      loadFeed(allFeeds.length - 1, function() {
+        allFeeds.splice(allFeeds.length - 1, 1);
+        newFeedHTML = $('div.feed').html();
+        expect(newFeedHTML).not.toEqual(currentFeedHTML);
+        done();
+      });
+    });
+
   });
+
 }());
