@@ -7,7 +7,7 @@
  * since some of these tests may require DOM elements. We want
  * to ensure they don't run until the DOM is ready.
  */
- 
+
 $(function() {
 
   /* RSS FEEDS TEST SUITE
@@ -20,7 +20,7 @@ $(function() {
    * - Does each feed have a valid URL?
    */
 
-  describe('RSS Feeds', function() {
+  describe('RSS feeds', function() {
 
     /* This test ensures that the allFeeds variable has
      * been defined and that it is not empty.
