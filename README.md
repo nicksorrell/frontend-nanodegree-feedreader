@@ -31,17 +31,17 @@ The Jasmin testing spec is run on load, and concerns testing the RSS data itself
 
 #### RSS Feeds
 - Does data for the RSS feeds exist?
-- Is the data for the feeds are correctly formatted?
+- Is the data for the feeds correctly formatted?
 
 #### Initial Entries
-- Is initial data is loaded into the UI on load?
+- Is initial data loaded into the UI when the page loads?
 
 #### Menu
-- Is the menu's visibility state is correct in various cases?
+- Is the menu's visibility state correct in various cases?
 
 #### Menu Feed Selection
-- Is the  menu's visibility state is correct?
-- Is the UI is updated with new data?
+- Is the  menu's visibility state correct?
+- Is the UI updated with new data?
 - Does the app fail gracefully when it can't load a feed?
 
 This list is a summary of the test categories. See _./spec/feedreader.js_ for details on each individual test.
